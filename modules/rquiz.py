@@ -2,11 +2,8 @@ import os
 import pandas as pd
 import cutlet
 from dotenv import load_dotenv
-import requests
 import discord
-import base64
-from PIL import Image
-from io import BytesIO
+from PIL import Image, ImageDraw, ImageFont
 
 load_dotenv()
 katsu = cutlet.Cutlet()
@@ -87,8 +84,8 @@ class RQuiz:
 
     async def send_question(self, message):
         current_row = self.get_data().iloc[self.get_current()]
-        await message.channel.send("{number}. {kanji}".format(number=self.get_current() + 1, kanji=current_row["Kanji"]))
-        await text_to_image(message, current_row["Kanji"])
+        # await message.channel.send("{number}. {kanji}".format(number=self.get_current() + 1, kanji=current_row["Kanji"]))
+        await text_to_image(message, current_row["Kanji"], self.get_current() + 1)
 
     async def check_finished(self, message):
         if self.check_total():
@@ -107,8 +104,13 @@ async def start(message, data, data_key, index=0, length=10, max_try=3):
     await message.channel.send("Japanese reading quiz started!")
     await data[data_key].send_question(message)
 
-async def text_to_image(message, text):
-  res_uri = requests.get("{URL}/generate-image/{params}".format(URL=os.getenv("BASE_API_URL"), params=text))
-  print(res_uri.text)
-  im = Image.open(BytesIO(base64.b64decode(res_uri.text)))
-  await message.channel.send(file=discord.File(im))
+
+async def text_to_image(message, text, number):
+    img = Image.new("RGB", (900, 250), color=(255, 255, 255))
+    fnt = ImageFont.truetype('../fonts/meiryo.ttc', 128)
+    d = ImageDraw.Draw(img)
+    d.text((30, 30), "{num}. {kanji}".format(
+        num=number, kanji=text), font=fnt, fill=(0, 0, 0))
+    filedir = os.path.abspath(os.getcwd()) + "\modules\cache\\rquiz-temp.png"
+    img.save(filedir)
+    await message.channel.send(file=discord.File(filedir))
