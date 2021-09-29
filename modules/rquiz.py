@@ -2,6 +2,11 @@ import os
 import pandas as pd
 import cutlet
 from dotenv import load_dotenv
+import requests
+import discord
+import base64
+from PIL import Image
+from io import BytesIO
 
 load_dotenv()
 katsu = cutlet.Cutlet()
@@ -83,6 +88,7 @@ class RQuiz:
     async def send_question(self, message):
         current_row = self.get_data().iloc[self.get_current()]
         await message.channel.send("{number}. {kanji}".format(number=self.get_current() + 1, kanji=current_row["Kanji"]))
+        await text_to_image(message, current_row["Kanji"])
 
     async def check_finished(self, message):
         if self.check_total():
@@ -100,3 +106,9 @@ async def start(message, data, data_key, index=0, length=10, max_try=3):
         n=10 if length == 0 else length).reset_index(drop=True), length, max_try)
     await message.channel.send("Japanese reading quiz started!")
     await data[data_key].send_question(message)
+
+async def text_to_image(message, text):
+  res_uri = requests.get("{URL}/generate-image/{params}".format(URL=os.getenv("BASE_API_URL"), params=text))
+  print(res_uri.text)
+  im = Image.open(BytesIO(base64.b64decode(res_uri.text)))
+  await message.channel.send(file=discord.File(im))

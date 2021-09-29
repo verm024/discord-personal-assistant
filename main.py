@@ -52,8 +52,8 @@ async def on_message(message):
                     max_try = int(message_list[4] if len(
                         message_list) > 4 else "3")
                     await rquiz.start(message, data, data_key, index, length, max_try)
-                except ValueError:
-                    print(ValueError)
+                except ValueError as e:
+                    print(str(e))
                     return
         elif message.content.lower() == "0pri" or message.content.lower() == "0p":
             await message.channel.send(get_help())
