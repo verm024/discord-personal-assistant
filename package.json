@@ -1,0 +1,24 @@
+{
+  "name": "discord-private-assistant",
+  "version": "1.0.0",
+  "description": "A private discord bot that was created to help me in my daily life",
+  "main": "index.js",
+  "dependencies": {
+    "express": "^4.17.1",
+    "text-to-image": "^4.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/verm024/discord-personal-assistant.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/verm024/discord-personal-assistant/issues"
+  },
+  "homepage": "https://github.com/verm024/discord-personal-assistant#readme"
+}
