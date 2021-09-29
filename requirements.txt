@@ -5,3 +5,4 @@ discord==1.7.3
 python-dotenv==0.19.0
 unidic-lite==1.0.8
 mecab-python3==1.0.4
+Pillow==8.0.1
