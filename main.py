@@ -36,13 +36,13 @@ async def on_message(message):
             data.pop(data_key)
             await message.channel.send("Exited from current activity.")
             return
-        
+
         # Reading quiz
         if data[data_key].get_type() == "rquiz":
             finished = await data[data_key].resume(message)
             if finished:
                 data.pop(data_key)
-        
+
         # Meaning quiz
         if data[data_key].get_type() == "mquiz":
             finished = await data[data_key].resume(message)
