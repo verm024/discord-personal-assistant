@@ -60,7 +60,7 @@ class RQuiz:
             self.increment_current()
             self.reset_current_try()
             await message.channel.send("Question skipped.")
-            await message.channel.send("Correct answer: {}".format(current_row["Hiragana"]))
+            await message.channel.send("Correct answer: {}; Meaning: {}".format(current_row["Hiragana"], current_row["Meaning"]))
             finished = await self.check_finished(message)
             if finished:
                 return True
@@ -71,6 +71,7 @@ class RQuiz:
             self.increment_true()
             self.reset_current_try()
             await message.channel.send("Correct!")
+            await message.channel.send("Correct answer: {}; Meaning: {}".format(current_row["Hiragana"], current_row["Meaning"]))
             finished = await self.check_finished(message)
             if finished:
                 return True
@@ -79,7 +80,7 @@ class RQuiz:
                 self.increment_current()
                 self.reset_current_try()
                 await message.channel.send("You have reached the max try, this question will be skipped.")
-                await message.channel.send("Correct answer: {}".format(current_row["Hiragana"]))
+                await message.channel.send("Correct answer: {}; Meaning: {}".format(current_row["Hiragana"], current_row["Meaning"]))
                 finished = await self.check_finished(message)
                 if finished:
                     return True
