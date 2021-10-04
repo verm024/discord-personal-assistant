@@ -64,7 +64,6 @@ class RQuiz:
             finished = await self.check_finished(message)
             if finished:
                 return True
-            await self.send_question(message)
             return
         if message.content == current_row["Hiragana"] or message.content.lower() == katsu.romaji(current_row["Hiragana"]).lower():
             self.increment_current()
