@@ -59,6 +59,9 @@ class MQuiz:
             self.reset_current_try()
             await message.channel.send("Question skipped.")
             await message.channel.send("Correct answer: {}; Hiragana: {}".format(current_row["Meaning"], current_row["Hiragana"]))
+            finished = await self.check_finished(message)
+            if finished:
+                return True
             await self.send_question(message)
             return
         splitted_message = message.content.lower().split(", ")

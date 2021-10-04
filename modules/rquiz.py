@@ -61,6 +61,9 @@ class RQuiz:
             self.reset_current_try()
             await message.channel.send("Question skipped.")
             await message.channel.send("Correct answer: {}".format(current_row["Hiragana"]))
+            finished = await self.check_finished(message)
+            if finished:
+                return True
             await self.send_question(message)
             return
         if message.content == current_row["Hiragana"] or message.content.lower() == katsu.romaji(current_row["Hiragana"]).lower():
@@ -85,7 +88,6 @@ class RQuiz:
 
     async def send_question(self, message):
         current_row = self.get_data().iloc[self.get_current()]
-        # await message.channel.send("{number}. {kanji}".format(number=self.get_current() + 1, kanji=current_row["Kanji"]))
         await utils.text_to_image(message, current_row["Kanji"], self.get_current() + 1)
 
     async def check_finished(self, message):

@@ -42,12 +42,14 @@ async def on_message(message):
             finished = await data[data_key].resume(message)
             if finished:
                 data.pop(data_key)
+            return
 
         # Meaning quiz
         if data[data_key].get_type() == "mquiz":
             finished = await data[data_key].resume(message)
             if finished:
                 data.pop(data_key)
+            return
     else:
         if message.content.lower().startswith("0pri ") or message.content.lower().startswith("0p "):
             message_list = message.content.split(" ")
