@@ -62,7 +62,6 @@ class MQuiz:
             finished = await self.check_finished(message)
             if finished:
                 return True
-            await self.send_question(message)
             return
         splitted_message = message.content.lower().split(", ")
         found = False
