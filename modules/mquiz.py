@@ -1,8 +1,9 @@
 import os
 import pandas as pd
 from dotenv import load_dotenv
-import discord
-from PIL import Image, ImageDraw, ImageFont
+
+# Utils
+import helper.utils as utils
 
 load_dotenv()
 
@@ -89,7 +90,7 @@ class MQuiz:
 
     async def send_question(self, message):
         current_row = self.get_data().iloc[self.get_current()]
-        await text_to_image(message, current_row["Kanji"], self.get_current() + 1)
+        await utils.text_to_image(message, current_row["Kanji"], self.get_current() + 1)
 
     async def check_finished(self, message):
         if self.check_total():
@@ -107,16 +108,3 @@ async def start(message, data, data_key, index=0, length=10, max_try=3):
         n=10 if length == 0 else length).reset_index(drop=True), length, max_try)
     await message.channel.send("Japanese meaning quiz started!")
     await data[data_key].send_question(message)
-
-
-async def text_to_image(message, text, number):
-    img = Image.new("RGB", (900, 250), color=(255, 255, 255))
-    fnt = ImageFont.truetype(os.path.abspath(
-        os.path.join((os.getcwd()), './fonts/meiryo.ttc')), 128)
-    d = ImageDraw.Draw(img)
-    d.text((30, 30), "{num}. {kanji}".format(
-        num=number, kanji=text), font=fnt, fill=(0, 0, 0))
-    filedir = os.path.abspath(os.path.join(
-        os.getcwd(), "./modules/cache/mquiz-temp.png"))
-    img.save(filedir)
-    await message.channel.send(file=discord.File(filedir))
