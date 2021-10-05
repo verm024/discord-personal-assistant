@@ -1,18 +1,16 @@
 import os
 import pandas as pd
-import cutlet
 from dotenv import load_dotenv
 
 # Utils
 import helper.utils as utils
 
 load_dotenv()
-katsu = cutlet.Cutlet()
 
 
-class RQuiz:
+class MQuiz:
     def __init__(self, data, length, max_try):
-        self.type = "rquiz"
+        self.type = "mquiz"
         self.data = data
         self.current = 0
         self.total = 10 if length == 0 else length
@@ -60,17 +58,23 @@ class RQuiz:
             self.increment_current()
             self.reset_current_try()
             await message.channel.send("Question skipped.")
-            await message.channel.send("Correct answer: {}; Meaning: {}".format(current_row["Hiragana"], current_row["Meaning"]))
+            await message.channel.send("Correct answer: {}; Hiragana: {}".format(current_row["Meaning"], current_row["Hiragana"]))
             finished = await self.check_finished(message)
             if finished:
                 return True
             return
-        if message.content == current_row["Hiragana"] or message.content.lower() == katsu.romaji(current_row["Hiragana"]).lower():
+        splitted_message = message.content.lower().split(", ")
+        found = False
+        for i in range(len(splitted_message)):
+            if splitted_message[i] in current_row["Meaning"].lower().split(", "):
+                found = True
+
+        if found:
             self.increment_current()
             self.increment_true()
             self.reset_current_try()
             await message.channel.send("Correct!")
-            await message.channel.send("Correct answer: {}; Meaning: {}".format(current_row["Hiragana"], current_row["Meaning"]))
+            await message.channel.send("Correct answer: {}; Hiragana: {}".format(current_row["Meaning"], current_row["Hiragana"]))
             finished = await self.check_finished(message)
             if finished:
                 return True
@@ -79,7 +83,7 @@ class RQuiz:
                 self.increment_current()
                 self.reset_current_try()
                 await message.channel.send("You have reached the max try, this question will be skipped.")
-                await message.channel.send("Correct answer: {}; Meaning: {}".format(current_row["Hiragana"], current_row["Meaning"]))
+                await message.channel.send("Correct answer: {}; Hiragana: {}".format(current_row["Meaning"], current_row["Hiragana"]))
                 finished = await self.check_finished(message)
                 if finished:
                     return True
@@ -99,10 +103,10 @@ class RQuiz:
 
 
 async def start(message, data, data_key, index=0, length=10, max_try=3):
-    await message.channel.send("Starting Japanese reading quiz...")
+    await message.channel.send("Starting Japanese meaning quiz...")
     URL = os.getenv("URL_MAIN")
     df = pd.read_csv(URL, encoding='utf-8')
-    data[data_key] = RQuiz(df.sample(
+    data[data_key] = MQuiz(df.sample(
         n=10 if length == 0 else length).reset_index(drop=True), length, max_try)
-    await message.channel.send("Japanese reading quiz started!")
+    await message.channel.send("Japanese meaning quiz started!")
     await data[data_key].send_question(message)
